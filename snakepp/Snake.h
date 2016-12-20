@@ -21,15 +21,19 @@ private:
 	SDL_Point tailLastPosition;
 
 public:
-	int speed = 5; // unit/s
+	int speed = 10; // unit/s
 
 	Snake();
 	~Snake();
 
 	void Draw(SDL_Surface& surface);
-	void Move(int m);
+	
+	void Move();
 	void AddPart();
+	void kill();
+	
 	void SetDirection(Direction dir);
-	inline Direction GetDirection() { return lastDirection; };
+	inline const Direction& GetDirection() { return lastDirection; };
+	inline const std::list<SDL_Point>& GetBody() { return body; };
 };
 

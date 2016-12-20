@@ -1,4 +1,5 @@
 #include <cmath>
+#include <algorithm>
 #include <SDL.h>
 #include "Snake.h"
 
@@ -18,28 +19,6 @@ Snake::~Snake()
 
 void Snake::Draw(SDL_Surface& surface)
 {
-	int move = 0;
-	int ticks = SDL_GetTicks();
-	int moveFreq = std::floor(1000 / speed);
-
-	if (lastMoved == 0)
-	{
-		move = 1;
-		lastMoved = ticks;
-	}
-	else if ((ticks - lastMoved) >= moveFreq)
-	{
-		move = (int)std::floor((ticks - lastMoved) / moveFreq);
-		lastMoved = lastMoved + move*moveFreq;
-	}
-
-	
-	if (move > 0)
-	{
-		Move(move);
-		lastDirection = direction;
-	}
-
 	for (auto it = body.begin(); it != (body.end()--); ++it)
 	{
 		SDL_Rect rect = { it->x,it->y,10,10 };
@@ -47,33 +26,54 @@ void Snake::Draw(SDL_Surface& surface)
 	}
 }
 
-void Snake::Move(int m)
+void Snake::Move()
 {
-	for (; m > 0; m--)
-	{
-		tailLastPosition = body.front();
-		for (auto it = body.begin(); it != (--body.end()); ++it)
-		{
-			auto nextPart = it;
-			nextPart++;
+	int m = 0;
+	int ticks = SDL_GetTicks();
+	int moveFreq = (int)std::floor(1000 / speed);
 
-			(*it) = (*nextPart);
-		}
-		
-		switch (direction)
+	if (lastMoved == 0)
+	{
+		m = 1;
+		lastMoved = ticks;
+	}
+	else if ((ticks - lastMoved) >= moveFreq)
+	{
+		m = (int)std::floor((ticks - lastMoved) / moveFreq);
+		lastMoved = lastMoved + m*moveFreq;
+	}
+
+
+	if (m > 0)
+	{
+		lastDirection = direction;
+
+		for (; m > 0; m--)
 		{
-		case NORTH:
-			body.back().y -= 10;
-			break;
-		case SOUTH:
-			body.back().y += 10;
-			break;
-		case EAST:
-			body.back().x += 10;
-			break;
-		case WEST:
-			body.back().x -= 10;
-			break;
+			tailLastPosition = body.front();
+			for (auto it = body.begin(); it != (--body.end()); ++it)
+			{
+				auto nextPart = it;
+				nextPart++;
+
+				(*it) = (*nextPart);
+			}
+
+			switch (direction)
+			{
+			case NORTH:
+				body.back().y -= 10;
+				break;
+			case SOUTH:
+				body.back().y += 10;
+				break;
+			case EAST:
+				body.back().x += 10;
+				break;
+			case WEST:
+				body.back().x -= 10;
+				break;
+			}
 		}
 	}
 }
@@ -81,6 +81,16 @@ void Snake::Move(int m)
 void Snake::AddPart()
 {
 	body.push_front(tailLastPosition);
+}
+
+void Snake::kill()
+{
+	while (body.size() > 1)
+		body.remove(body.front());
+
+	body.front().x = 0;
+	body.front().y = 0;
+	direction = EAST;
 }
 
 void Snake::SetDirection(Direction dir)
@@ -92,4 +102,9 @@ void Snake::SetDirection(Direction dir)
 		return;
 	
 	direction = dir;
+}
+
+bool operator==(const SDL_Point& a, const SDL_Point& b)
+{
+	return a.x == b.x && a.y == b.y;
 }
