@@ -17,20 +17,55 @@ Renderer::Renderer(int width, int height, int flags)
 	if (renderer == nullptr)
 		throw new std::exception("Failed to create SDL renderer");
 
+	surface = SDL_CreateRGBSurface(0, 800, 600, 32, 0, 0, 0, 0);
+	if (surface == nullptr)
+		throw new std::exception("Failed to create surface");
+
 
 }
 
-void Renderer::render()
+void Renderer::Render()
 {
-	SDL_Event e;
-	while (SDL_WaitEvent(&e))
+	while (!quit)
 	{
-		if (e.type == SDL_EventType::SDL_QUIT)
-			break;
+		SDL_Event e;
+		while (SDL_PollEvent(&e))
+			game->ProcessEvent(e);
+
+		game->Draw();
+
+		SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surface);
+
+		SDL_RenderClear(renderer);
+		SDL_RenderCopy(renderer, tex, NULL, NULL);
+		SDL_RenderPresent(renderer);
+
+		SDL_DestroyTexture(tex);
 	}
+}
+
+void Renderer::SetGame(Game& g)
+{
+	game = &g;
+}
+
+void Renderer::Quit()
+{
+	quit = true;
+}
+
+SDL_Surface & Renderer::GetSurface()
+{
+	return *surface;
 }
 
 Renderer::~Renderer()
 {
+	if (win != nullptr)
+		SDL_DestroyWindow(win);
+
+	if (renderer != nullptr)
+		SDL_DestroyRenderer(renderer);
+
 	SDL_Quit();
 }
