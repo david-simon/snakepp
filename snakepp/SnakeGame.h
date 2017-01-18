@@ -7,11 +7,13 @@
 class SnakeGame : public Game
 {
 	Snake snake;
-	Renderer& renderer;
+	Renderer renderer;
 	Pickup p;
 
+	SnakeGame(const SnakeGame&);
+
 public:
-	SnakeGame(Renderer& r);
+	SnakeGame();
 	~SnakeGame();
 
 	void ProcessEvent(SDL_Event&);
@@ -21,4 +23,3 @@ public:
 	bool CheckPickup();
 	void GeneratePickup();
 };
-

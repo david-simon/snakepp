@@ -8,8 +8,8 @@ int main(int arc, char* argv[])
 {
 	try
 	{
-		Renderer r(800, 600, NULL);
-		SnakeGame game(r);
+		SnakeGame& game = (SnakeGame&)GetGameObject();
+
 		game.Start();
 	}
 	catch (std::exception e)

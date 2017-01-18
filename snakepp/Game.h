@@ -9,3 +9,4 @@ public:
 	virtual void Start() = 0;
 };
 
+Game& GetGameObject();

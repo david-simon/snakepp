@@ -1,11 +1,12 @@
 #include <ctime>
+#include <iostream>
 #include "SnakeGame.h"
 
-SnakeGame::SnakeGame(Renderer& r) : renderer(r), p(0,0)
+SnakeGame::SnakeGame() : p(0,0), renderer(800, 600, NULL)
 {
+	std::cout << "renderer: " << &renderer << std::endl;
 	srand(time(NULL));
 	GeneratePickup();
-	renderer.SetGame(*this);
 }
 
 void SnakeGame::Start()
@@ -115,4 +116,11 @@ void SnakeGame::Draw()
 
 SnakeGame::~SnakeGame()
 {
+}
+
+
+Game& GetGameObject()
+{
+	static SnakeGame game;
+	return game;
 }

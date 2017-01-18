@@ -1,13 +1,11 @@
 #include "Renderer.h"
 #include <exception>
-#include <iostream>
 
 
 Renderer::Renderer(int width, int height, int flags)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 		throw new std::exception("Failed to initalize SDL");
-
 
 	win = SDL_CreateWindow("Snake++", 100, 100, width, height, flags);
 	if (win == nullptr)
@@ -20,8 +18,6 @@ Renderer::Renderer(int width, int height, int flags)
 	surface = SDL_CreateRGBSurface(0, 800, 600, 32, 0, 0, 0, 0);
 	if (surface == nullptr)
 		throw new std::exception("Failed to create surface");
-
-
 }
 
 void Renderer::Render()
@@ -30,9 +26,9 @@ void Renderer::Render()
 	{
 		SDL_Event e;
 		while (SDL_PollEvent(&e))
-			game->ProcessEvent(e);
+			GetGameObject().ProcessEvent(e);
 
-		game->Draw();
+		GetGameObject().Draw();
 
 		SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surface);
 
@@ -44,10 +40,6 @@ void Renderer::Render()
 	}
 }
 
-void Renderer::SetGame(Game& g)
-{
-	game = &g;
-}
 
 void Renderer::Quit()
 {

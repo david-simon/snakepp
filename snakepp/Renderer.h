@@ -8,7 +8,6 @@ class Renderer
 	SDL_Window* win;
 	SDL_Renderer* renderer;
 	SDL_Surface* surface;
-	Game* game;
 	bool quit;
 
 public:
