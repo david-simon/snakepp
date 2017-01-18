@@ -6,7 +6,8 @@ class Pickup
 public:
 	SDL_Point position;
 
-	Pickup(int x, int y);
+	Pickup();
 	void Draw(SDL_Surface& surface);
+	void Generate();
 };
 

@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <SDL.h>
 #include "Snake.h"
+#include "SnakeGame.h"
 
 
 
@@ -19,6 +20,18 @@ Snake::~Snake()
 
 void Snake::Draw(SDL_Surface& surface)
 {
+	Move();
+
+	if (CheckCollision())
+	{
+		kill();
+	}
+	else if (CheckPickup())
+	{
+		AddPart();
+		((SnakeGame&)GetGameObject()).GetPickup().Generate();
+	}
+
 	for (auto it = body.begin(); it != (body.end()--); ++it)
 	{
 		SDL_Rect rect = { it->x,it->y,10,10 };
@@ -102,6 +115,29 @@ void Snake::SetDirection(Direction dir)
 		return;
 	
 	direction = dir;
+}
+
+inline bool Snake::CheckCollision()
+{
+	SDL_Point head = body.back();
+
+
+	if (head.x < 0 || head.y < 0 || head.x >= 800 || head.y >= 600)
+		return true;
+
+	for (auto it = body.begin(); it != (--body.end()); ++it)
+	{
+		if (head.x == it->x && head.y == it->y)
+			return true;
+	}
+
+	return false;
+}
+
+inline bool Snake::CheckPickup()
+{
+	SDL_Point head = body.back();
+	return head.x == ((SnakeGame&)GetGameObject()).GetPickup().position.x && head.y == ((SnakeGame&)GetGameObject()).GetPickup().position.y;
 }
 
 bool operator==(const SDL_Point& a, const SDL_Point& b)

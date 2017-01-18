@@ -15,8 +15,7 @@ public:
 	~Renderer();
 
 	void Render();
-	void SetGame(Game&);
-	void Quit();
+	void Stop();
 
 	SDL_Surface& GetSurface();
 };

@@ -19,7 +19,7 @@ public:
 	void ProcessEvent(SDL_Event&);
 	void Draw();
 	void Start();
-	bool CheckCollision();
-	bool CheckPickup();
-	void GeneratePickup();
+
+	inline Pickup& GetPickup() { return p; };
+	inline Snake& GetSnake() { return snake; };
 };

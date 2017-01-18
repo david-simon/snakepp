@@ -35,5 +35,8 @@ public:
 	void SetDirection(Direction dir);
 	inline const Direction& GetDirection() { return lastDirection; };
 	inline const std::list<SDL_Point>& GetBody() { return body; };
+
+	bool CheckCollision();
+	bool CheckPickup();
 };
 

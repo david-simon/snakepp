@@ -41,7 +41,7 @@ void Renderer::Render()
 }
 
 
-void Renderer::Quit()
+void Renderer::Stop()
 {
 	quit = true;
 }

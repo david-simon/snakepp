@@ -2,68 +2,14 @@
 #include <iostream>
 #include "SnakeGame.h"
 
-SnakeGame::SnakeGame() : p(0,0), renderer(800, 600, NULL)
+SnakeGame::SnakeGame() : p(), renderer(800, 600, NULL)
 {
-	std::cout << "renderer: " << &renderer << std::endl;
-	srand(time(NULL));
-	GeneratePickup();
 }
 
 void SnakeGame::Start()
 {
+	p.Generate();
 	renderer.Render();
-}
-
-void SnakeGame::GeneratePickup()
-{
-	bool occupied;
-	do
-	{
-		occupied = false;
-
-		p.position = { (rand() % 9) * 100, (rand() % 7) * 100 };
-		if (p.position.x >= 800)
-			p.position.x -= 10;
-		if (p.position.y >= 600)
-			p.position.y -= 10;
-
-		std::list<SDL_Point> snakeBody = snake.GetBody();
-
-		for (auto it = snakeBody.begin(); it != snakeBody.end(); ++it)
-		{
-			if (p.position.x == it->x && p.position.y == it->y)
-			{
-				occupied = true;
-				break;
-			}
-		}
-
-	} while (occupied);
-}
-
-bool SnakeGame::CheckPickup()
-{
-	SDL_Point head = snake.GetBody().back();
-	return head.x == p.position.x && head.y == p.position.y;
-}
-
-bool SnakeGame::CheckCollision()
-{
-	std::list<SDL_Point> snakeBody = snake.GetBody();
-
-	SDL_Point head = snakeBody.back();
-
-
-	if (head.x < 0 || head.y < 0 || head.x >= 800 || head.y >= 600)
-		return true;
-
-	for (auto it = snakeBody.begin(); it != (--snakeBody.end()); ++it)
-	{
-		if (head.x == it->x && head.y == it->y)
-			return true;
-	}
-	
-	return false;
 }
 
 void SnakeGame::ProcessEvent(SDL_Event& e)
@@ -71,7 +17,7 @@ void SnakeGame::ProcessEvent(SDL_Event& e)
 	switch (e.type)
 	{
 	case SDL_EventType::SDL_QUIT:
-		renderer.Quit();
+		renderer.Stop();
 		break;
 	case SDL_EventType::SDL_KEYDOWN:
 		if (e.key.keysym.sym == SDLK_DOWN)
@@ -85,7 +31,7 @@ void SnakeGame::ProcessEvent(SDL_Event& e)
 		else if (e.key.keysym.sym == SDLK_SPACE)
 			snake.AddPart();
 		else if (e.key.keysym.sym == SDLK_ESCAPE)
-			renderer.Quit();
+			renderer.Stop();
 
 		break;
 	}
@@ -98,18 +44,8 @@ void SnakeGame::Draw()
 
 	p.Draw(renderer.GetSurface());
 
-	snake.Move();
+	
 	snake.Draw(renderer.GetSurface());
-
-	if (CheckCollision())
-	{
-		snake.kill();
-	}
-	else if (CheckPickup())
-	{
-		snake.AddPart();
-		GeneratePickup();
-	}
 
 }
 
