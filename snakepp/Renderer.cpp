@@ -15,7 +15,7 @@ Renderer::Renderer(int width, int height, int flags)
 	if (renderer == nullptr)
 		throw new std::exception("Failed to create SDL renderer");
 
-	surface = SDL_CreateRGBSurface(0, 800, 600, 32, 0, 0, 0, 0);
+	surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
 	if (surface == nullptr)
 		throw new std::exception("Failed to create surface");
 }
